@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据校验</title>
+    <style>
+        #startCheck{
+            margin-left: 30px;
+            padding: 3px 10px;
+        }
+        .header{
+            font-size: 14px;
+            font-weight: bold;
+        }
+        #tool{
+            display: none;
+        }
+        #message{
+            display: none;
+            font-size: 12px;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 15px;
+            overflow: auto;
+        }
+        #message p{
+            white-space:nowrap;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    任务ID：<span id="jobId"></span>，记录数：<span id="recordCount"></span><button id="startCheck" disabled>校验</button>
+    <div id="tool">状态：<span id="status">校验中</span>，校验数：<span id="checkCount">0</span>，成功：<span id="success">0</span>，失败：<span id="failed">0</span></div>
+</div>
+<div id="message">
+
+</div>
+
+<script src="jquery-2.2.4.min.js"></script>
+
+<script>
+    //获取url中的参数
+    var queryStr=location.search.substr(1).split('&');
+    var params={};
+    queryStr.forEach(function(v){
+        params[v.split('=')[0]]=decodeURIComponent(v.split('=')[1]);
+    });
+
+    var jobId=params["jobId"];
+    var recordCount=params["recordCount"];
+    $("#jobId").html(jobId);
+    $("#recordCount").html(recordCount);
+
+    $(function(){
+        connectWebSocket();
+    })
+
+    //建立WebSocket连接
+    function connectWebSocket(){
+        console.log("开始...");
+        //建立webSocket连接
+        websocket = new WebSocket("ws://"+window.location.host+"/eshelper/check/"+jobId);
+
+        //打开webSokcet连接时，回调该函数
+        websocket.onopen = function () {
+            console.log("onpen");
+            $("#startCheck").prop('disabled', false);
+        }
+
+        //关闭webSocket连接时，回调该函数
+        websocket.onclose = function () {
+            //关闭连接
+            console.log("onclose");
+        }
+
+        //接收信息
+        websocket.onmessage = function (msg) {
+            showMessage(JSON.parse(msg.data));
+        }
+
+    }
+    //发送消息
+    function send(){
+        var postValue={};
+        postValue.jobId=jobId;
+        postValue.recordCount=recordCount;
+        websocket.send(JSON.stringify(postValue));
+    }
+    //关闭连接
+    function closeWebSocket(){
+        if(websocket != null) {
+            websocket.close();
+        }
+    }
+
+    var scrollInterval=setInterval(function(){
+        var $msg=$("#message");
+        $msg.scrollTop($msg[0].scrollHeight);
+    },32);
+
+    function showMessage(data){
+        var $msg=$("#message");
+        $("#tool").show();
+        $msg.show();
+        $("#status").html(data.status);
+        $("#checkCount").html(data.checkCount);
+        $("#success").html(data.success);
+        $("#failed").html(data.failed);
+        var message=data.message;
+        var appendMsg=data.appendMsg;
+        if(message){
+            $msg.html("");
+            $("<p>"+message+"</p>").appendTo($msg);
+        }
+        if(appendMsg){
+            $("<p>"+appendMsg+"</p>").appendTo($msg);
+        }
+
+        if (data.status=='校验不通过'){
+            $("#status").css("color","red");
+        }else if(data.status=='校验通过'){
+            $("#status").css("color","green");
+        }else{
+            $("#status").css("color","#000");
+        }
+        if (data.checkCount==data.success+data.failed){
+            setTimeout(function(){
+                clearInterval(scrollInterval);
+                closeWebSocket();
+            },3000);
+        }
+    }
+
+
+    $("#startCheck").click(function(){
+        $(this).hide();
+        send();
+    })
+</script>
+
+</body>
+</html>

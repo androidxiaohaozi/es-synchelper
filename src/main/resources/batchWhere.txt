@@ -1,0 +1,11 @@
+ where f_apply_id >= 1 and f_apply_id <= 100
+ where f_apply_id > 100 and f_apply_id <= 200
+ where f_apply_id > 200 and f_apply_id <= 300
+ where f_apply_id > 300 and f_apply_id <= 400
+ where f_apply_id > 400 and f_apply_id <= 500
+ where f_apply_id > 500 and f_apply_id <= 600
+ where f_apply_id > 600 and f_apply_id <= 700
+ where f_apply_id > 700 and f_apply_id <= 800
+ where f_apply_id > 800 and f_apply_id <= 900
+ where f_apply_id > 900 and f_apply_id <= 1000
+ where f_apply_id > 1000 and f_apply_id <= 1100
