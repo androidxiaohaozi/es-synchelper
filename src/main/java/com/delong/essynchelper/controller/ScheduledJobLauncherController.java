@@ -46,13 +46,13 @@ public class ScheduledJobLauncherController implements InitializingBean {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    String batchExecutionSql = "select * from (select t.*,p.string_val as where_sql from BATCH_STEP_EXECUTION t " +
+    String batchExecutionSql = "select t.*,p.string_val as where_sql from BATCH_STEP_EXECUTION t " +
             "left join BATCH_JOB_EXECUTION_PARAMS p on p.job_execution_id=t.job_execution_id and p.key_name='whereSql' " +
-            "order by t.start_time desc) where rownum <= 50";
+            "order by t.start_time desc limit  50";
 
 
-    @Scheduled(cron = "0 0 9 ? * *")
-    @RequestMapping("/launchscheduledjob")
+    //@Scheduled(cron = "0 0 9 ? * *")
+    //@RequestMapping("/launchscheduledjob")
     public Map<String, Object> launchJob() throws Exception {
         Map<String, Object> result = new HashMap<>();
         String whereSql = "";

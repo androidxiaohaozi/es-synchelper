@@ -1,6 +1,6 @@
 package com.delong.essynchelper.batch;
 
-import com.delong.essynchelper.entity.ApplyPo;
+import com.delong.essynchelper.entity.CommonPo;
 import com.delong.essynchelper.util.JsonUtil;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -14,7 +14,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;
 
-public class PolicyESWriter implements ItemWriter<ApplyPo> {
+public class PolicyESWriter implements ItemWriter<CommonPo> {
 
     private Logger logger = LoggerFactory.getLogger(PolicyESWriter.class);
 
@@ -25,17 +25,17 @@ public class PolicyESWriter implements ItemWriter<ApplyPo> {
     }
 
     @Override
-    public void write(List<? extends ApplyPo> list) throws Exception {
+    public void write(List<? extends CommonPo> list) throws Exception {
         logger.info("PolicyESWriter list.size() = "+list.size());
         BulkRequest bulkRequest = new BulkRequest();
-        Document annotation = ApplyPo.class.getAnnotation(Document.class);
+        Document annotation = CommonPo.class.getAnnotation(Document.class);
         //TODO 日期格式处理 https://jtruty.github.io/programming/2015/04/03/elasticsearch-http-queries-with-jest.html
         //需要的日期 https://stackoverflow.com/questions/41365704/elasticsearch-jest-date-serialization-java
        //参考 https://segmentfault.com/a/1190000016726694
-        for (ApplyPo vo : list){
+        for (CommonPo vo : list){
             IndexRequest indexRequest = new IndexRequest(annotation.indexName());
             String source = JsonUtil.toJson(vo);
-            indexRequest.id(vo.getApplyId().toString());
+            indexRequest.id(vo.getId().toString());
             indexRequest.source(source, XContentType.JSON);
             bulkRequest.add(indexRequest);
         }

@@ -145,7 +145,7 @@ public class JobLauncherController implements InitializingBean {
             List<String> lines = IOUtils.readLines(inputStream, "utf-8");
             for (String whereSql : lines){
                 JobParametersBuilder builder =new JobParametersBuilder();
-                builder.addLong("time",System.currentTimeMillis());
+//                builder.addLong("time",System.currentTimeMillis());
                 builder.addString("whereSql",whereSql);
                 try {
                     logger.info("批量任务准备执行 {}",whereSql);

@@ -1,6 +1,7 @@
 package com.delong.essynchelper.batch;
 
 import com.delong.essynchelper.entity.ApplyPo;
+import com.delong.essynchelper.entity.CommonPo;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Service
 @StepScope
-public class PolicyItemWriteListener implements ItemWriteListener<ApplyPo> {
+public class PolicyItemWriteListener implements ItemWriteListener<CommonPo> {
 
     @Value("#{stepExecution.jobExecutionId}")
     private Long jobId;
@@ -20,17 +21,19 @@ public class PolicyItemWriteListener implements ItemWriteListener<ApplyPo> {
     private PolicyLogFileHelper policyLogFileHelper;
 
     @Override
-    public void beforeWrite(List<? extends ApplyPo> list) {
-
+    public void beforeWrite(List<? extends CommonPo> list) {
+        for (CommonPo commonPo : list) {
+            System.out.printf(commonPo.getELECURVALUE());
+        }
     }
 
     @Override
-    public void afterWrite(List<? extends ApplyPo> list) {
+    public void afterWrite(List<? extends CommonPo> list) {
         policyLogFileHelper.write(jobId,list);
     }
 
     @Override
-    public void onWriteError(Exception e, List<? extends ApplyPo> list) {
+    public void onWriteError(Exception e, List<? extends CommonPo> list) {
 //        System.out.println(jobId+" onWriteError");
 //        e.printStackTrace();
     }

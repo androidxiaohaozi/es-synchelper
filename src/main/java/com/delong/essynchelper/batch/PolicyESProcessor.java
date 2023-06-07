@@ -1,7 +1,6 @@
 package com.delong.essynchelper.batch;
 
-import com.delong.essynchelper.entity.ApplyPo;
-import com.delong.essynchelper.entity.AppraisePo;
+import com.delong.essynchelper.entity.CommonPo;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,14 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PolicyESProcessor implements ItemProcessor<ApplyPo, ApplyPo> {
+public class PolicyESProcessor implements ItemProcessor<CommonPo, CommonPo> {
 
     @Autowired
     @Qualifier("policyJdbcTemplate")
     private JdbcTemplate policyJdbcTemplate;
 
-    private String taskSql1 = "select * from t_sa_appraise where f_batch_relation_type = 0 and f_relation_id = ? " +
-            "f_relation_type = 0 and f_is_delete = 1 ";
+    private String taskSql1 = "select * from t_pellandfeeding";
 
     /**
      * 数据处理，填充评价数据
@@ -28,8 +26,8 @@ public class PolicyESProcessor implements ItemProcessor<ApplyPo, ApplyPo> {
      * @throws Exception e
      */
     @Override
-    public ApplyPo process(ApplyPo applyPo) {
-        updateTask(applyPo);
+    public CommonPo process(CommonPo applyPo) {
+//        updateTask(applyPo);
 //        updatePay(applyPo);
         applyPo.setDefaultMultiQueryIndex();
         return applyPo;
@@ -39,10 +37,10 @@ public class PolicyESProcessor implements ItemProcessor<ApplyPo, ApplyPo> {
      * 更新task表对应的数据
      * @param applyPo applyPo
      */
-    private void updateTask(ApplyPo applyPo){
+    private void updateTask(CommonPo applyPo){
         try {
-            List<AppraisePo> appraisePos = policyJdbcTemplate.queryForList(taskSql1, AppraisePo.class);
-            applyPo.setApplAppraisePos(appraisePos);
+            List<CommonPo> appraisePos = policyJdbcTemplate.queryForList(taskSql1, CommonPo.class);
+            applyPo.setCommonPoList(appraisePos);
         }catch (DataAccessException e){
             // do nothing,查询结果为null时会抛出异常，忽略掉
         }

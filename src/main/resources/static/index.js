@@ -63,6 +63,7 @@ function searchExecution() {
         url: './searchExecution',
         method: 'POST',
         success: function (data) {
+            debugger;
             if (data && data.length > 0) {
                 searchResult = data;
                 var html = showDataView(data);
@@ -91,7 +92,7 @@ function showDataView(list) {
         html.push(data.READ_COUNT + '</td><td>');
         html.push(data.WRITE_COUNT + '</td><td>');
         html.push(data.WRITE_SKIP_COUNT + '</td><td>');
-        html.push(htmlEncode(data.WHERE_SQL) + '</td>');
+        html.push(htmlEncode(data.where_sql) + '</td>');
         html.push('</tr>')
     }
     return html.join('\n');
@@ -123,8 +124,14 @@ function toLocalDateTime(time) {
  * @returns {string}
  */
 function elapsed(start, end) {
+    debugger;
+    var startDate = start.substring(0,19);
+    start = new Date(startDate).getTime();
     if (!end) {
         end = new Date().getTime();
+    } else {
+        var endDate = end.substring(0,19);
+        end = new Date(endDate).getTime();
     }
     var elapse = end - start;
     if (elapse < 1000) {
