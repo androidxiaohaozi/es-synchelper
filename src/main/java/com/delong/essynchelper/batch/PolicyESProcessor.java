@@ -1,6 +1,7 @@
 package com.delong.essynchelper.batch;
 
 import com.delong.essynchelper.entity.CommonPo;
+import com.delong.essynchelper.entity.TspReceiveDataPo;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PolicyESProcessor implements ItemProcessor<CommonPo, CommonPo> {
+public class PolicyESProcessor implements ItemProcessor<TspReceiveDataPo, TspReceiveDataPo> {
 
     @Autowired
     @Qualifier("policyJdbcTemplate")
@@ -26,10 +27,10 @@ public class PolicyESProcessor implements ItemProcessor<CommonPo, CommonPo> {
      * @throws Exception e
      */
     @Override
-    public CommonPo process(CommonPo applyPo) {
+    public TspReceiveDataPo process(TspReceiveDataPo applyPo) {
 //        updateTask(applyPo);
 //        updatePay(applyPo);
-        applyPo.setDefaultMultiQueryIndex();
+//        applyPo.setDefaultMultiQueryIndex();
         return applyPo;
     }
 

@@ -2,6 +2,7 @@ package com.delong.essynchelper.batch;
 
 import com.delong.essynchelper.entity.ApplyPo;
 import com.delong.essynchelper.entity.CommonPo;
+import com.delong.essynchelper.entity.TspReceiveDataPo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +36,10 @@ public class PolicyLogFileHelper {
 
     private ConcurrentHashMap<Long, FileChannel> jobFileChannels = new ConcurrentHashMap<>();
 
-    void write(Long jobId, List<? extends CommonPo> list) {
+    void write(Long jobId, List<? extends TspReceiveDataPo> list) {
         FileChannel fileChannel = getCurrentFileChannel(jobId);
         Integer lines = jobFileLines.get(jobId);
-        for (CommonPo vo : list) {
+        for (TspReceiveDataPo vo : list) {
             ByteBuffer src = ByteBuffer.wrap((vo.getId() + "\n").getBytes());
             try {
                 fileChannel.write(src);

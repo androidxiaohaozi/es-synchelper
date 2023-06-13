@@ -3,6 +3,7 @@ package com.delong.essynchelper.config;
 import com.delong.essynchelper.batch.*;
 import com.delong.essynchelper.entity.ApplyPo;
 import com.delong.essynchelper.entity.CommonPo;
+import com.delong.essynchelper.entity.TspReceiveDataPo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -110,20 +111,25 @@ public class BatchConfig {
 
     @Bean
     @StepScope
-    public JdbcPagingItemReader<CommonPo> reader(@Qualifier("policyDataSource")DataSource policyDataSource,
-                                                @Value("#{jobParameters}") Map<String,Object> jobParameters){
+    public JdbcPagingItemReader<TspReceiveDataPo> reader(@Qualifier("policyDataSource")DataSource policyDataSource,
+                                                         @Value("#{jobParameters}") Map<String,Object> jobParameters){
         String sql = getPolicySql();
-        JdbcPagingItemReader<CommonPo> reader = new JdbcPagingItemReader<>();
+        JdbcPagingItemReader<TspReceiveDataPo> reader = new JdbcPagingItemReader<>();
         reader.setDataSource(policyDataSource);
         reader.setFetchSize(10);
         //把从数据库读取到的数据转成CommonPo对象
-        reader.setRowMapper(new RowMapper<CommonPo>() {
+        reader.setRowMapper(new RowMapper<TspReceiveDataPo>() {
             @Override
-            public CommonPo mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-                CommonPo commonPo = new CommonPo();
+            public TspReceiveDataPo mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                TspReceiveDataPo commonPo = new TspReceiveDataPo();
                 commonPo.setId(resultSet.getInt(1));
-                commonPo.setELECURVALUE(resultSet.getString(2));
-                commonPo.setELECURTIMESTAMP(resultSet.getString(3));
+                commonPo.setDataTime(resultSet.getString(2));
+                commonPo.setA34001(resultSet.getString(3));
+                commonPo.setA34002(resultSet.getString(4));
+                commonPo.setA34004(resultSet.getString(5));
+                commonPo.setMN(resultSet.getString(6));
+                commonPo.setMonitorPoints(resultSet.getString(7));
+                commonPo.setMonitorType(resultSet.getString(8));
                 return commonPo;
             }
         });
@@ -131,7 +137,7 @@ public class BatchConfig {
         //指定sql语句
         MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
         provider.setSelectClause(sql);
-        provider.setFromClause("from t_pellandfeeding");
+        provider.setFromClause("from t_tsp_receive_data");
 
         //指定根据那个字段进行排序
         Map<String, Order> sort = new HashMap<>(1);
@@ -144,7 +150,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public ItemWriter<CommonPo> writer(){
+    public ItemWriter<TspReceiveDataPo> writer(){
         PolicyESWriter writer = new PolicyESWriter();
         writer.setJestClient(ESClientFactory.getRestHighLevelClient());
         return writer;
@@ -171,15 +177,15 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step policyStep(StepBuilderFactory stepBuilderFactory, ItemReader<CommonPo> reader,
-                           ItemWriter<CommonPo> writer, PolicySkipListener policySkipListener,
+    public Step policyStep(StepBuilderFactory stepBuilderFactory, ItemReader<TspReceiveDataPo> reader,
+                           ItemWriter<TspReceiveDataPo> writer, PolicySkipListener policySkipListener,
                            PolicyItemWriteListener policyItemWriteListener, PolicyESProcessor policyESProcessor) {
 
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
         backOffPolicy.setBackOffPeriod(backOffPeriod); //失败重试间隔1s
 
         return stepBuilderFactory.get("policyStep")
-                .<CommonPo, CommonPo> chunk(commitInterval)
+                .<TspReceiveDataPo, TspReceiveDataPo> chunk(commitInterval)
                 .reader(reader)
                 .processor(policyESProcessor)
                 .writer(writer)

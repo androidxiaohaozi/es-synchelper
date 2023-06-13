@@ -1,6 +1,7 @@
 package com.delong.essynchelper.batch;
 
 import com.delong.essynchelper.entity.CommonPo;
+import com.delong.essynchelper.entity.TspReceiveDataPo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.SkipListener;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @StepScope
-public class PolicySkipListener implements SkipListener<CommonPo, CommonPo> {
+public class PolicySkipListener implements SkipListener<TspReceiveDataPo, TspReceiveDataPo> {
 
     private Logger logger = LoggerFactory.getLogger("skipLog");
 
@@ -32,12 +33,12 @@ public class PolicySkipListener implements SkipListener<CommonPo, CommonPo> {
      * @param throwable throwable
      */
     @Override
-    public void onSkipInWrite(CommonPo policyESVO, Throwable throwable) {
+    public void onSkipInWrite(TspReceiveDataPo policyESVO, Throwable throwable) {
         logger.info("{},{},{}", jobId, policyESVO.getId(), policyESVO.getId());
     }
 
     @Override
-    public void onSkipInProcess(CommonPo policyESVO, Throwable throwable) {
+    public void onSkipInProcess(TspReceiveDataPo policyESVO, Throwable throwable) {
 
     }
 }

@@ -28,17 +28,17 @@ public class CommonPo {
      */
     private List<CommonPo> commonPoList;
 
-    //多条件查询
-    private String multiQueryIndex;
+/*    //多条件查询
+    private String multiQueryIndex;*/
 
-    /**
+/*    *//**
      * 将常用的几个查询条件， 拼接成一个
-     */
+     *//*
     public void setDefaultMultiQueryIndex() {
         StringBuilder sb = new StringBuilder();
         if (StringUtils.isNoneBlank(this.ELECURTIMESTAMP)) {
             sb.append(this.ELECURTIMESTAMP).append(" ");  // 时间加索引
         }
         this.multiQueryIndex = sb.toString();
-    }
+    }*/
 }
