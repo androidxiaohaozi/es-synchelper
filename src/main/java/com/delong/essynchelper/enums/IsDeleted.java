@@ -27,10 +27,6 @@ public enum IsDeleted {
     }
     /**
      * 功能描述: 获取是否删除的枚举
-     * @Param: [code]
-     * @Return: com.dl.cihong.enums.IsDeleted
-     * @Author: lvyy
-     * @Date: 2020/10/20
      */
     public static IsDeleted valueOf(Integer code){
         return codeToEnum.get(code);
