@@ -1,6 +1,5 @@
 package com.delong.essynchelper.batch;
 
-import com.delong.essynchelper.entity.CommonPo;
 import com.delong.essynchelper.entity.TspReceiveDataPo;
 import com.delong.essynchelper.util.JsonUtil;
 import org.elasticsearch.action.bulk.BulkRequest;

@@ -1,6 +1,5 @@
 package com.delong.essynchelper.batch;
 
-import com.delong.essynchelper.entity.CommonPo;
 import com.delong.essynchelper.entity.TspReceiveDataPo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

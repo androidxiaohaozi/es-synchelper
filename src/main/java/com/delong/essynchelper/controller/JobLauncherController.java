@@ -15,6 +15,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -233,6 +235,9 @@ public class JobLauncherController implements InitializingBean {
                 }
             }
 
+            DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest("washcardelayqueue");
+            deleteByQueryRequest.setQuery(new BoolQueryBuilder().mustNot(new TermQueryBuilder("city", "上海")));
+            client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
